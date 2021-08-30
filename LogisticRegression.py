@@ -2,23 +2,34 @@
 # One file for strategy and info reporting. 
 # Another file for data gathering and cleaning.
 
-from data import STOCKS_LIST
-# from config import *
+from config import *
 from functions import *
+from tqdm import tqdm
 from gateway import read_data_dump, read_stocks_list
 
 
 data = read_data_dump()
+latest_date = data.index[-1]
 STOCKS_LIST = read_stocks_list()
+output = []
 
-for STOCK in STOCKS_LIST:
+print(f"Latest date: {latest_date}\n")
+
+print(f"Price Type: {ptype}")
+print(f"Lookback Window: {lookback}")
+print(f"Normalization Lookback: {ptype}")
+print(f"Filter Signal: {ftype}")
+print(f"Sell strategy: {sell_strat}")
+
+
+for STOCK in tqdm(STOCKS_LIST):
 	stock = data[STOCK]
 
-	high = data["High"]
-	low = data["Low"]
-	close = data["Close"]
-	volume = data["Volume"]
-	open = data["Open"]
+	high = stock["High"]
+	low = stock["Low"]
+	close = stock["Close"]
+	volume = stock["Volume"]
+	open = stock["Open"]
 
 	base = get_base_dataset(high, low, close, open)
 	synth = get_synthetic_dataset(base)
@@ -37,9 +48,15 @@ for STOCK in STOCKS_LIST:
 	else:
 		filter = True
 
-	# buy_signals = (base.iloc[nlbk-1:] > scaled_loss)[filter]
-	# sell_signals = (base.iloc[nlbk-1:] < scaled_loss)[filter]
+	signals = get_all_signals(high, low, close, open, base, scaled_loss, filter)
 
-
-
-
+	if signals.index[-1] == latest_date:
+		if signals.iloc[-1] == BUY:
+			output.append(f"BUY {STOCK}")
+		elif signals.iloc[-1] == SELL:
+			output.append(f"SELL {STOCK}")
+		else:
+			output.append(f"Not a valid signal {STOCK}")
+	
+for o in output:
+	print(o)

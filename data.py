@@ -2,14 +2,11 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 from datetime import date, timedelta
-from gateway import read_data_dump, write_data_dump
+from gateway import *
 
 # Get list of all the stocks that have futures
 # Stocks excluded- IRCTC.NS, ^NSEBANK, ^NSEI
-STOCKS_LIST = []
-with open("./future_stocks.txt", "r") as f:
-	STOCKS_LIST = f.readlines()
-	STOCKS_LIST = list(map(lambda x: x.strip("\n"), STOCKS_LIST))
+STOCKS_LIST = read_stocks_list()
 
 # Get completely fresh data
 def data_download(sym=STOCKS_LIST, start_date='2019-01-01'):
@@ -20,8 +17,8 @@ def data_download(sym=STOCKS_LIST, start_date='2019-01-01'):
 	if data.empty:
 		return None
 
-	data.drop("Close", inplace=True, axis=1)
-	data.rename({"Adj Close": "Close"}, axis=1, inplace=True)
+	# data.drop("Close", inplace=True, axis=1)
+	# data.rename({"Adj Close": "Close"}, axis=1, inplace=True)
 	data = data.round(decimals=2)
 	try:
 		data = data.swaplevel(axis=1)
