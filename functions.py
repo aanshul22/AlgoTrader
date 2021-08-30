@@ -140,7 +140,7 @@ def getPercentage(reso):
 
 
 def get_buy_signals(base, scaled_loss, filter):
-	return np.logical_and((base.iloc[nlbk-1:] > scaled_loss), filter)
+	return (np.logical_and((base.iloc[nlbk-1:] > scaled_loss), filter)).iloc[nlbk-1:]
 
 def get_sell_signals(high, low, close, open, base, scaled_loss, filter):
 	momentums = getMomentum(high, low, close, open)
@@ -151,6 +151,7 @@ def get_sell_signals(high, low, close, open, base, scaled_loss, filter):
 		logistic = np.logical_and((base.iloc[nlbk-1:] < scaled_loss), filter)
 		decisive = close < stop
 		sell_signals = (np.logical_or(decisive, logistic))
+		sell_signals = sell_signals.iloc[nlbk-1:] # To remove possible NA values
 		assert sum(sell_signals.isna()) == 0
 	elif sell_strat == "Decisive":
 		sell_signals = close < stop

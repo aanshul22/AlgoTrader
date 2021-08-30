@@ -5,10 +5,14 @@
 from config import *
 from functions import *
 from tqdm import tqdm
+from datetime import date
 from gateway import read_data_dump, read_stocks_list
 
 
+start_from_date = str(date(startYear, startMonth, startDate))
+
 data = read_data_dump()
+data = data.loc[start_from_date:]
 latest_date = data.index[-1]
 STOCKS_LIST = read_stocks_list()
 output = []
@@ -17,9 +21,9 @@ print(f"Latest date: {latest_date}\n")
 
 print(f"Price Type: {ptype}")
 print(f"Lookback Window: {lookback}")
-print(f"Normalization Lookback: {ptype}")
+print(f"Normalization Lookback: {nlbk}")
 print(f"Filter Signal: {ftype}")
-print(f"Sell strategy: {sell_strat}")
+print(f"Sell strategy: {sell_strat}\n")
 
 
 for STOCK in tqdm(STOCKS_LIST):

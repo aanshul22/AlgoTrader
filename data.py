@@ -13,12 +13,10 @@ def data_download(sym=STOCKS_LIST, start_date='2019-01-01'):
 	if not isinstance(sym, list) and not isinstance(sym, str):
 		sym = sym.tolist()
 
-	data = yf.download(sym, start_date, str(date.today()))
+	data = yf.download(sym, start_date)
 	if data.empty:
 		return None
 
-	# data.drop("Close", inplace=True, axis=1)
-	# data.rename({"Adj Close": "Close"}, axis=1, inplace=True)
 	data = data.round(decimals=2)
 	try:
 		data = data.swaplevel(axis=1)
