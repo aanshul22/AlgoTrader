@@ -1,13 +1,13 @@
-# Convert the pine script to python script. 
-# One file for strategy and info reporting. 
-# Another file for data gathering and cleaning.
-
+from sys import argv
 from config import *
 from functions import *
 from tqdm import tqdm
 from datetime import date
 from gateway import read_data_dump, read_stocks_list
 
+if len(argv) == 2:
+	if argv[1] in valid_ftypes:
+		ftype = argv[1]
 
 start_from_date = str(date(startYear, startMonth, startDate))
 

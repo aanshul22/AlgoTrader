@@ -5,6 +5,7 @@ nlbk       = 3       		# Normalization Lookback |2..240|
 lrate      = 0.0009  		# Learning Rate |0.0001..0.01|    minval=0.0001, maxval=0.01, step=0.0001
 iterations = 1000    		# Training Iterations |50..20000|
 ftype      = 'Volatility'   # Filter Signals by  options=['Volatility','Volume','Both','None'])
+valid_ftypes = ['Volatility', 'Volume', 'Both', 'None']
 # curves     = (true,  'Show Loss & Prediction Curves?')
 # easteregg  = (true,   'Optional Calculation?')  
 # useprice   = (true,   'Use Price Data for Signal Generation?')
