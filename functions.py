@@ -140,24 +140,22 @@ def getPercentage(reso):
 
 
 def get_buy_signals(base, scaled_loss, filter):
-	return ((base.iloc[nlbk-1:] > scaled_loss)[filter]).dropna()
+	return np.logical_and((base.iloc[nlbk-1:] > scaled_loss), filter)
 
-# Non matching indicies between buy and sell
 def get_sell_signals(high, low, close, open, base, scaled_loss, filter):
 	momentums = getMomentum(high, low, close, open)
 	stop = get_low(momentums, high, low, close, open)
 
 	sell_signals = None
 	if sell_strat == "Both":
-		logistic = ((base.iloc[nlbk-1:] < scaled_loss)[filter]).dropna()
+		logistic = np.logical_and((base.iloc[nlbk-1:] < scaled_loss), filter)
 		decisive = close < stop
 		sell_signals = (np.logical_or(decisive, logistic))
-		assert sum(decisive[sell_signals.isna()]) == 0
-		sell_signals.dropna(inplace=True)
+		assert sum(sell_signals.isna()) == 0
 	elif sell_strat == "Decisive":
 		sell_signals = close < stop
 	elif sell_strat == "Logistic":
-		sell_signals = ((base.iloc[nlbk-1:] < scaled_loss)[filter]).dropna()
+		sell_signals = np.logical_and((base.iloc[nlbk-1:] < scaled_loss), filter)
 	else:
 		print("Not a valid sell_start")
 		exit(1)
@@ -171,10 +169,11 @@ def get_all_signals(high, low, close, open, base, scaled_loss, filter):
 	sell_signals = get_sell_signals(high, low, close, open, base, scaled_loss, filter)
 	signals = []
 	for buy, sell in zip(buy_signals, sell_signals):
-		if buy:
-			signals.append(BUY)
-		elif sell:
+		# If sell and buy both, then sell superseeds
+		if sell:
 			signals.append(SELL)
+		elif buy:
+			signals.append(BUY)
 		else:
 			signals.append(HOLD)
 	signals = pd.Series(signals, index=buy_signals.index)
@@ -183,7 +182,7 @@ def get_all_signals(high, low, close, open, base, scaled_loss, filter):
 	signals = signals[signals != 0]
 	signals.dropna(inplace=True)
 	
-	return signals
+	return signals/2
 
 
 # # Might not work
