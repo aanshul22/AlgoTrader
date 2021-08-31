@@ -3,7 +3,8 @@ from config import *
 from functions import *
 from tqdm import tqdm
 from datetime import date
-from gateway import read_data_dump, read_stocks_list
+from webhook import send_alerts
+from gateway import read_data_dump, read_stocks_list, write_signals
 
 if len(argv) == 2:
 	if argv[1] in valid_ftypes:
@@ -64,3 +65,7 @@ for STOCK in tqdm(STOCKS_LIST):
 	
 for o in output:
 	print(o)
+
+send_alerts(latest_date, output)
+
+# write_signals(output)
