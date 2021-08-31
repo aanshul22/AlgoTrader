@@ -9,7 +9,7 @@ from gateway import *
 STOCKS_LIST = read_stocks_list()
 
 # Get completely fresh data
-def data_download(sym=STOCKS_LIST, start_date='2019-01-01'):
+def data_download(sym=STOCKS_LIST, start_date='2020-01-01'):
 	if not isinstance(sym, list) and not isinstance(sym, str):
 		sym = sym.tolist()
 
@@ -17,11 +17,13 @@ def data_download(sym=STOCKS_LIST, start_date='2019-01-01'):
 	if data.empty:
 		return None
 
+	data.drop("Adj Close", axis=1, inplace=True)
 	data = data.round(decimals=2)
 	try:
 		data = data.swaplevel(axis=1)
 	except:
 		pass
+
 
 	rows = set(data.index)
 	data.dropna(inplace=True)

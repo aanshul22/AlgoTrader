@@ -14,7 +14,7 @@ sell_strat = "Both" 		# options=["Logistic", "Decisive", "Both"])
 use_start_date = True   	# Use start date
 startDate = 1
 startMonth = 1
-startYear = 2020
+startYear = 2021
 
 BUY = 1
 SELL = -1
