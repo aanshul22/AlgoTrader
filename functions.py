@@ -53,11 +53,33 @@ def minimax(ds, base, p):
 		lo = min(ds.iloc[i : i + p])
 		highest = max(base.iloc[i : i + p])
 		lowest = min(base.iloc[i : i + p])
-
-		scaled_losses.append((highest - lowest) * (ds.iloc[i + p - 1] - lo)/(hi - lo) + lowest)
+		if hi - lo == 0:
+			scaled_losses.append(scaled_losses[-1])
+		else:
+			scaled_losses.append((highest - lowest) * (ds.iloc[i + p - 1] - lo)/(hi - lo) + lowest)
 
 	return pd.Series(scaled_losses, index=ds.index[p-1:]).round(2)
 
+
+def pretty_print(m):
+	buy = []
+	for k in m:
+		if "BUY" in k:
+			buy.append(k)
+	buy = sorted(buy, key=lambda x : (x[:4], -1 * int(x[-2:])))
+	sell = []
+	for k in m:
+		if "SELL" in k:
+			sell.append(k)
+
+	fmt = "{:4}\t{:15}\t{:3}"
+	table = [fmt.format(*(row.split())) for row in buy]
+	buy_s = "\n".join(table)
+
+	fmt = "{:4}\t{:15}"
+	table = [fmt.format(*(row.split())) for row in sell]
+	sell_s = "\n".join(table)
+	return buy_s + "\n" + sell_s
 
 
 def sigmoid(z):

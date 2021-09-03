@@ -5,4 +5,10 @@ DataPrep.ipynb
 playground.py
 playground.ipynb
 data_dump.csv
+data_dump_0.csv
 kaggle.json
+backtest.csv
+backtest_short.csv
+backtest_short_jan_mar.csv
+backtest_short_old.csv
+backtester.py

@@ -57,15 +57,19 @@ for STOCK in tqdm(STOCKS_LIST):
 
 	if signals.index[-1] == latest_date:
 		if signals.iloc[-1] == BUY:
-			output.append(f"BUY {STOCK}")
+			last_sell = signals.index[-2]
+			candles_back = len(stock) - stock.index.get_loc(last_sell)
+			output.append(f"BUY {STOCK} {candles_back}")
 		elif signals.iloc[-1] == SELL:
 			output.append(f"SELL {STOCK}")
 		else:
 			output.append(f"Not a valid signal {STOCK}")
 	
-for o in output:
-	print(o)
+# for o in sorted(output):
+# 	print(o)
 
-send_alerts(latest_date, output)
+print(pretty_print(output))
+
+# send_alerts(latest_date, output)
 
 # write_signals(output)
